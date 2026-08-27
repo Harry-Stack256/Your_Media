@@ -1,0 +1,4 @@
+.env
+node_modules/
+savedCreators.json
+channel.json
