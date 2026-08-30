@@ -212,6 +212,77 @@ async function queryChannel(channelID) {
 }
 
 
+
+//This method will run for all channels that are subscribed to 
+async function getRecentUploads(channelId) {
+  const uploadsPlaylistId = 'UU' + channelId.slice(2);
+
+  try {
+    const response = await axios.get("https://www.googleapis.com/youtube/v3/playlistItems", {
+      params: {
+        key: YOUTUBE_API_KEY,
+        part: "snippet,contentDetails",
+        playlistId: uploadsPlaylistId,
+        maxResults: 5     // max 50, default 5 — you can just leave this off if count is 5
+      }
+    });
+
+    return response.data.items.map((item) => ({
+      videoId: item.contentDetails.videoId,
+      title: item.snippet.title,
+      publishedAt: item.contentDetails.videoPublishedAt,  // more accurate than snippet.publishedAt
+      thumbnail: item.snippet.thumbnails.default.url ,
+      }));
+
+  } catch (error) {
+    console.error('Error fetching recent uploads:', error);
+    return [];
+  }
+}
+//this function mays are array of creators that will be used to serve the user there 5 videos
+
+//One key note before we fetch more video's we might implement some type of timer 
+// so that we don't burn through qoutes 
+ async function start5(){
+
+  try{
+   const savedChannels = loadSavedChannels();
+   console.log(savedChannels);
+   const channelResults = savedChannels.filter((channel) => channel.subscribed == true);
+   const subbedCreators=[]
+
+   for(let x=0; x<channelResults.length;x++){
+     let currentChannelID =channelResults[x].channelID
+   let uploads =  getRecentUploads(currentChannelID);
+
+   
+    //this keeps track of when the request for new uploads was made so when can make 
+    //a timer for it so we can just update them properly 
+    let  videoTime= new Date().toISOString();
+   let  subbedObject ={...channelResults[x],recentVideos:[{videoID: uploads.videoID,
+      title: uploads.title, publishedAt: uploads.publishedAt, thumbnail: uploads.thumbnail
+   }],"videosFetchedAt":videoTime}
+   subbedCreators.push(subbedObject);
+   
+   }
+     const jsonString = JSON.stringify(subbedCreators, null, 2);
+
+    // 3. Write the string to a file named 'creators.json'
+    await fs.writeFile('start5.json', jsonString, 'utf-8');
+
+    console.log('Successfully wrote starting 5 array to starting5.json!');
+    console.log(jsonString);
+
+
+  
+  }catch(error){
+  console.log("This is a "+error.name+" error");
+  }
+  
+
+}
+
+
 // Fuse.js setup
 
 

@@ -1,0 +1,12 @@
+[
+  {
+    "channelId": "UC4G10tk3AHFuyMIuD3rHOBA",
+    "title": "RDCworld1",
+    "thumbnail": "https://...",
+    "subscriberCount": "7330000",
+    "recentVideos": [
+      { "videoId": "...", "title": "...", "publishedAt": "...", "thumbnail": "..." }
+    ],
+    "videosFetchedAt": "2026-08-30T14:00:00Z"
+  }
+]

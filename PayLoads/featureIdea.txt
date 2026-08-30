@@ -1,0 +1,40 @@
+// Example using fetch for Javascript/Node.js
+const uploadsPlaylistId = 'UU' + channelId.substring(2); // Converts UC... to UU...
+
+const response = await fetch(
+  `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=5&key=${API_KEY}`
+);
+
+const data = await response.json();
+
+// The top 5 results are ordered newest to oldest
+const recentVideos = data.items.map(item => ({
+  title: item.snippet.title,
+  videoId: item.snippet.resourceId.videoId,
+  publishedAt: item.snippet.publishedAt
+}));
+class Solution(object):
+    def isAnagram(self, s, t):
+        if(!(len(s)==len(t))):
+            return False
+           
+        mapT= {}
+        mapS ={}
+        for i in range(len(s)):
+            mapS[s[i]] =mapS.get(s[i],0)
+            mapT[t[i]]= mapT.get(t[i],0)
+        for i in range (len(s)):
+            ourrences1= mapT.get(s[i],0)
+            ourrences2= mapS.get(s[i],0)
+            if( !(ourrences1==ourrences2)):
+                return False
+        return True
+
+
+                
+            
+
+
+    return False
+
+    
