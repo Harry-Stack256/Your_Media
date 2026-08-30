@@ -13,40 +13,119 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
 
 const answer = await rl.question('What function do you want to run \n Type .help for options:  ');
 
-if(answer.trim().toLowerCase()===".help"){
+// ...existing code...
 
-  const choice=  await rl.question(' type creator for creator function channel for channel function \n ');
+if (answer.trim().toLowerCase() === ".help") {
+  const choice = await rl.question(' type creator for creator function, channel for channel function, or subscribe for saved channels \n ');
 
-  if(choice.trim().toLowerCase()==="creator"){
-    let creator =  await rl.question('Give me a creator :  ');
-   await queryCreator(creator);
-
-
-  }else if(choice.trim().toLowerCase()==="channel"){
-     let channelID =  await rl.question('Give me a channelID :  ');
-    await queryChannel(channelID);
-  }else{
-    console.log("You didn't pick creator or channel")
-  }
-  rl.close();
-
-}else{
-  let choice=  await rl.question(':  ');
-
-  if(choice.trim().toLowerCase()==="creator"){
-
-  let creator =  await rl.question('Give me a creator :  ');
+  if (choice.trim().toLowerCase() === "creator") {
+    let creator = await rl.question('Give me a creator :  ');
     await queryCreator(creator);
 
-  }else if(choice.trim().toLowerCase()==="channel"){
-     let channelID =  await rl.question('Give me a channelID :  ');
+  } else if (choice.trim().toLowerCase() === "channel") {
+    let channelID = await rl.question('Give me a channelID :  ');
     await queryChannel(channelID);
-  }else{
-    console.log("You didn't pick creator or channel")
+
+  } else if (choice.trim().toLowerCase() === "subscribe") {
+    await subscribeToChannelsFromCli();
+
+  } else {
+    console.log("You didn't pick creator, channel, or subscribe");
   }
   rl.close();
 
+} else {
+  let choice = await rl.question(':  ');
+
+  if (choice.trim().toLowerCase() === "creator") {
+    let creator = await rl.question('Give me a creator :  ');
+    await queryCreator(creator);
+
+  } else if (choice.trim().toLowerCase() === "channel") {
+    let channelID = await rl.question('Give me a channelID :  ');
+    await queryChannel(channelID);
+
+  } else if (choice.trim().toLowerCase() === "subscribe") {
+    await subscribeToChannelsFromCli();
+
+  } else {
+    console.log("You didn't pick creator, channel, or subscribe");
+  }
+  rl.close();
 }
+
+// ...existing code...
+
+async function subscribeToChannelsFromCli() {
+  const savedChannels = await loadSavedChannels();
+
+  if (!Array.isArray(savedChannels) || savedChannels.length === 0) {
+    console.log("No channels are saved in channel.json yet.");
+    return;
+  }
+
+  const showChannels = await rl.question("Do you want to see the saved channels in channel.json? (y/n): ");
+  if (showChannels.trim().toLowerCase() === "y" || showChannels.trim().toLowerCase() === "yes") {
+    console.log("Saved channels:");
+    savedChannels.forEach((channel, index) => {
+      console.log(`${index + 1}. ${channel.title} (${channel.channelId})`);
+    });
+  }
+
+  const searchTerm = await rl.question("Type a channel name to subscribe to: ");
+  if (!searchTerm.trim()) {
+    console.log("No channel name entered.");
+    return;
+  }
+
+  const exactMatch = savedChannels.find((channel) =>
+    channel.title.trim().toLowerCase() === searchTerm.trim().toLowerCase()
+  );
+
+  if (exactMatch) {
+    const updatedChannels = savedChannels.map((channel) =>
+      channel.channelId === exactMatch.channelId
+        ? { ...channel, subscribed: true }
+        : channel
+    );
+
+    await fs.writeFile('channel.json', JSON.stringify(updatedChannels, null, 2), 'utf-8');
+    console.log(`Subscribed to ${exactMatch.title}.`);
+    return;
+  }
+
+  const fuse = new Fuse(savedChannels, {
+    keys: ['title'],
+    threshold: 0.35,
+    ignoreLocation: true
+  });
+
+  const possibleMatches = fuse.search(searchTerm.trim());
+
+  if (!possibleMatches.length) {
+    console.log("No close match found in channel.json.");
+    return;
+  }
+
+  const suggestedChannel = possibleMatches[0].item;
+  const didYouMean = await rl.question(`Did you mean "${suggestedChannel.title}"? (y/n): `);
+
+  if (didYouMean.trim().toLowerCase() === "y" || didYouMean.trim().toLowerCase() === "yes") {
+    const updatedChannels = savedChannels.map((channel) =>
+      channel.channelId === suggestedChannel.channelId
+        ? { ...channel, subscribed: true }
+        : channel
+    );
+
+    await fs.writeFile('channel.json', JSON.stringify(updatedChannels, null, 2), 'utf-8');
+    console.log(`Subscribed to ${suggestedChannel.title}.`);
+    return;
+  }
+
+  console.log(`Okay, ${suggestedChannel.title} was not selected.`);
+}
+
+
 
 async function loadSavedChannels(){
   try {
@@ -243,44 +322,35 @@ async function getRecentUploads(channelId) {
 
 //One key note before we fetch more video's we might implement some type of timer 
 // so that we don't burn through qoutes 
- async function start5(){
 
-  try{
-   const savedChannels = loadSavedChannels();
-   console.log(savedChannels);
-   const channelResults = savedChannels.filter((channel) => channel.subscribed == true);
-   const subbedCreators=[]
+//this function is called when a user has subed to a channel 
+ async function start5() {
+  try {
+    const savedChannels = await loadSavedChannels(); // ← await added
+    const channelResults = savedChannels.filter((channel) => channel.subscribed === true);
+    const subbedCreators = [];
 
-   for(let x=0; x<channelResults.length;x++){
-     let currentChannelID =channelResults[x].channelID
-   let uploads =  getRecentUploads(currentChannelID);
+    for (let x = 0; x < channelResults.length; x++) {
+      const currentChannel = channelResults[x];
+      const uploads = await getRecentUploads(currentChannel.channelId); // ← await + correct casing
 
-   
-    //this keeps track of when the request for new uploads was made so when can make 
-    //a timer for it so we can just update them properly 
-    let  videoTime= new Date().toISOString();
-   let  subbedObject ={...channelResults[x],recentVideos:[{videoID: uploads.videoID,
-      title: uploads.title, publishedAt: uploads.publishedAt, thumbnail: uploads.thumbnail
-   }],"videosFetchedAt":videoTime}
-   subbedCreators.push(subbedObject);
-   
-   }
-     const jsonString = JSON.stringify(subbedCreators, null, 2);
+      const videoTime = new Date().toISOString();
+      const subbedObject = {
+        ...currentChannel,
+        recentVideos: uploads,       // ← already an array of 5 — no need to rebuild it
+        videosFetchedAt: videoTime
+      };
+      subbedCreators.push(subbedObject);
+    }
 
-    // 3. Write the string to a file named 'creators.json'
+    const jsonString = JSON.stringify(subbedCreators, null, 2);
     await fs.writeFile('start5.json', jsonString, 'utf-8');
-
-    console.log('Successfully wrote starting 5 array to starting5.json!');
-    console.log(jsonString);
-
-
-  
-  }catch(error){
-  console.log("This is a "+error.name+" error");
+    console.log('Successfully wrote Starting Five to start5.json!');
+  } catch (error) {
+    console.error(`${error.name}: ${error.message}`); // ← .message added, .name alone tells you almost nothing
   }
-  
-
 }
+
 
 
 // Fuse.js setup

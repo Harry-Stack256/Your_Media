@@ -1,40 +1,113 @@
-// Example using fetch for Javascript/Node.js
-const uploadsPlaylistId = 'UU' + channelId.substring(2); // Converts UC... to UU...
+// ...existing code...
 
-const response = await fetch(
-  `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=5&key=${API_KEY}`
-);
+if (answer.trim().toLowerCase() === ".help") {
+  const choice = await rl.question(' type creator for creator function, channel for channel function, or subscribe for saved channels \n ');
 
-const data = await response.json();
+  if (choice.trim().toLowerCase() === "creator") {
+    let creator = await rl.question('Give me a creator :  ');
+    await queryCreator(creator);
 
-// The top 5 results are ordered newest to oldest
-const recentVideos = data.items.map(item => ({
-  title: item.snippet.title,
-  videoId: item.snippet.resourceId.videoId,
-  publishedAt: item.snippet.publishedAt
-}));
-class Solution(object):
-    def isAnagram(self, s, t):
-        if(!(len(s)==len(t))):
-            return False
-           
-        mapT= {}
-        mapS ={}
-        for i in range(len(s)):
-            mapS[s[i]] =mapS.get(s[i],0)
-            mapT[t[i]]= mapT.get(t[i],0)
-        for i in range (len(s)):
-            ourrences1= mapT.get(s[i],0)
-            ourrences2= mapS.get(s[i],0)
-            if( !(ourrences1==ourrences2)):
-                return False
-        return True
+  } else if (choice.trim().toLowerCase() === "channel") {
+    let channelID = await rl.question('Give me a channelID :  ');
+    await queryChannel(channelID);
 
+  } else if (choice.trim().toLowerCase() === "subscribe") {
+    await subscribeToChannelsFromCli();
 
-                
-            
+  } else {
+    console.log("You didn't pick creator, channel, or subscribe");
+  }
+  rl.close();
 
+} else {
+  let choice = await rl.question(':  ');
 
-    return False
+  if (choice.trim().toLowerCase() === "creator") {
+    let creator = await rl.question('Give me a creator :  ');
+    await queryCreator(creator);
 
-    
+  } else if (choice.trim().toLowerCase() === "channel") {
+    let channelID = await rl.question('Give me a channelID :  ');
+    await queryChannel(channelID);
+
+  } else if (choice.trim().toLowerCase() === "subscribe") {
+    await subscribeToChannelsFromCli();
+
+  } else {
+    console.log("You didn't pick creator, channel, or subscribe");
+  }
+  rl.close();
+}
+
+// ...existing code...
+
+async function subscribeToChannelsFromCli() {
+  const savedChannels = await loadSavedChannels();
+
+  if (!Array.isArray(savedChannels) || savedChannels.length === 0) {
+    console.log("No channels are saved in channel.json yet.");
+    return;
+  }
+
+  const showChannels = await rl.question("Do you want to see the saved channels in channel.json? (y/n): ");
+  if (showChannels.trim().toLowerCase() === "y" || showChannels.trim().toLowerCase() === "yes") {
+    console.log("Saved channels:");
+    savedChannels.forEach((channel, index) => {
+      console.log(`${index + 1}. ${channel.title} (${channel.channelId})`);
+    });
+  }
+
+  const searchTerm = await rl.question("Type a channel name to subscribe to: ");
+  if (!searchTerm.trim()) {
+    console.log("No channel name entered.");
+    return;
+  }
+
+  const exactMatch = savedChannels.find((channel) =>
+    channel.title.trim().toLowerCase() === searchTerm.trim().toLowerCase()
+  );
+
+  if (exactMatch) {
+    const updatedChannels = savedChannels.map((channel) =>
+      channel.channelId === exactMatch.channelId
+        ? { ...channel, subscribed: true }
+        : channel
+    );
+
+    await fs.writeFile('channel.json', JSON.stringify(updatedChannels, null, 2), 'utf-8');
+    console.log(`Subscribed to ${exactMatch.title}.`);
+    return;
+  }
+
+  const fuse = new Fuse(savedChannels, {
+    keys: ['title'],
+    threshold: 0.35,
+    ignoreLocation: true
+  });
+
+  const possibleMatches = fuse.search(searchTerm.trim());
+
+  if (!possibleMatches.length) {
+    console.log("No close match found in channel.json.");
+    return;
+  }
+
+  const suggestedChannel = possibleMatches[0].item;
+  const didYouMean = await rl.question(`Did you mean "${suggestedChannel.title}"? (y/n): `);
+
+  if (didYouMean.trim().toLowerCase() === "y" || didYouMean.trim().toLowerCase() === "yes") {
+    const updatedChannels = savedChannels.map((channel) =>
+      channel.channelId === suggestedChannel.channelId
+        ? { ...channel, subscribed: true }
+        : channel
+    );
+
+    await fs.writeFile('channel.json', JSON.stringify(updatedChannels, null, 2), 'utf-8');
+    console.log(`Subscribed to ${suggestedChannel.title}.`);
+    return;
+  }
+
+  console.log(`Okay, ${suggestedChannel.title} was not selected.`);
+}
+
+// ...existing code...
