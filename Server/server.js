@@ -14,10 +14,22 @@ import fs from 'fs/promises';
 
 const app = express();
 
-app.use("/creator", creatorRouter);
-app.get("/about", (req, res) => res.send("About Page"));
-app.get("/", (req, res) => res.send("root page"));
+app.get('/api/creators/:name', async (req, res) => {
+  const creator = await queryCreator(req.params.name);
+  res.json(creator);
+});
 
-app.listen(3013, () => {
-  console.log("Express server running at http://localhost:3013");
+app.get('/api/channels/:id', async (req, res) => {
+  const channel = await queryChannel(req.params.id);
+  res.json(channel);
+});
+
+app.post('/api/channels/:id/subscribe', async (req, res) => {
+  const updated = await subscribeToChannel(req.params.id);
+  res.json(updated);
+});
+
+app.get('/api/feed', async (req, res) => {
+  const feed = await start5();
+  res.json(feed);
 });

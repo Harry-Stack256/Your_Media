@@ -63,6 +63,11 @@ async function subscribeToChannelsFromCli() {
     console.log("No channels are saved in channel.json yet.");
     return;
   }
+  let subscribedChannels = savedChannels.filter(channel => channel.subscribed=== true);
+  if(subscribedChannels.length ==5) {
+    console.log("You have already subscribed to 5 channels. Please unsubscribe from a channel before subscribing to a new one.");
+    return;
+  }
 
   const showChannels = await rl.question("Do you want to see the saved channels in channel.json? (y/n): ");
   if (showChannels.trim().toLowerCase() === "y" || showChannels.trim().toLowerCase() === "yes") {
@@ -75,6 +80,7 @@ async function subscribeToChannelsFromCli() {
   const searchTerm = await rl.question("Type a channel name to subscribe to: ");
   if (!searchTerm.trim()) {
     console.log("No channel name entered.");
+    
     return;
   }
 
@@ -91,6 +97,7 @@ async function subscribeToChannelsFromCli() {
 
     await fs.writeFile('channel.json', JSON.stringify(updatedChannels, null, 2), 'utf-8');
     console.log(`Subscribed to ${exactMatch.title}.`);
+    await start5(); // Call start5() after subscribing to a channel
     return;
   }
 
@@ -119,6 +126,7 @@ async function subscribeToChannelsFromCli() {
 
     await fs.writeFile('channel.json', JSON.stringify(updatedChannels, null, 2), 'utf-8');
     console.log(`Subscribed to ${suggestedChannel.title}.`);
+   await start5(); // Call start5() after subscribing to a channel
     return;
   }
 
@@ -156,6 +164,7 @@ async function queryCreator(query) {
     return;
   }
 
+  //look to see if a query match the set of creator that has ever been searched for the query there channel
   const savedCreators = await loadSavedCreators();
   const fuse = new Fuse(savedCreators, {
     keys: ['channelTitle'],
@@ -170,12 +179,15 @@ async function queryCreator(query) {
     return;
   }
 
+
+
   const creator = await saveCreatorsToJson(query.trim());
   if (creator) {
     await queryChannel(creator.channelId);
   }
 }
-
+//This saves the creator to a json this file acts as a repository for all creators that have been searched for 
+//and we be used to query channel meta data and video data
 async function saveCreatorsToJson(query) {
   if (typeof query !== "string" || query.trim() === "") {
    console.log("Its not a string ");
@@ -222,7 +234,10 @@ async function saveCreatorsToJson(query) {
     console.error('Error fetching or writing file:', error);
   }
 }
-
+//This takes the the repository of creator queries and gets the channel meta data thatt will be used 
+//to track the channels the user has subed to and not subed 
+//in set notation terms this is the union of the set of creators that have been searched which 
+//is the superset of the set of channels that have been subed to and not subed to
 async function queryChannel(channelID) {
   if(typeof channelID !== "string" || channelID.trim() === ""){
     return;
@@ -279,7 +294,7 @@ async function queryChannel(channelID) {
 
    const jsonString = JSON.stringify(updatedChannels, null, 2);
 
-    // 3. Write the string to a file named 'creators.json'
+    // 3. Write the string to a file named 'channel.json' in the current directory
     await fs.writeFile('channel.json', jsonString, 'utf-8');
 
     console.log('Successfully saved creators array to channel.json!');
