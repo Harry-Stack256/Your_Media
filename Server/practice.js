@@ -4,8 +4,12 @@ import axios from 'axios';
 import Fuse from 'fuse.js';
 import "dotenv/config";
 import readline from 'node:readline/promises';
+
 import { stdin as input, stdout as output } from 'node:process';
+
 import { subscribe } from 'node:diagnostics_channel';
+
+
 
 const rl = readline.createInterface({ input, output });
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
@@ -183,7 +187,10 @@ async function queryCreator(query) {
 
   const creator = await saveCreatorsToJson(query.trim());
   if (creator) {
-    await queryChannel(creator.channelId);
+    try{
+    await queryChannel(creator.channelId); }catch(error){
+     
+    }
   }
 }
 //This saves the creator to a json this file acts as a repository for all creators that have been searched for 
@@ -238,11 +245,12 @@ async function saveCreatorsToJson(query) {
 //to track the channels the user has subed to and not subed 
 //in set notation terms this is the union of the set of creators that have been searched which 
 //is the superset of the set of channels that have been subed to and not subed to
+
 async function queryChannel(channelID) {
   if(typeof channelID !== "string" || channelID.trim() === ""){
     return;
   }
-  try {
+  
     const response = await axios.get("https://www.googleapis.com/youtube/v3/channels", {
       params: {
         key: YOUTUBE_API_KEY,
@@ -264,7 +272,7 @@ async function queryChannel(channelID) {
       
     }));
     if(channel.length===0){
-      console.log("Nothing was returned");
+      throw new Error("No channel was found");
       return;
     }
 
@@ -272,7 +280,7 @@ async function queryChannel(channelID) {
     // The 'null, 2' argument formats the JSON with indentation so it's clean and readable
     const firstCreator = response.data.items[0];
     if (!firstCreator) {
-      console.log("No creator was found");
+      throw new Error("No creator was found");
       return;
     }
 
@@ -300,9 +308,7 @@ async function queryChannel(channelID) {
     console.log('Successfully saved creators array to channel.json!');
     console.log(jsonString);
 
-  } catch (error) {
-    console.error('Error fetching or writing file:', error);
-  }
+  
 }
 
 
@@ -339,7 +345,7 @@ async function getRecentUploads(channelId) {
 // so that we don't burn through qoutes 
 
 //this function is called when a user has subed to a channel 
- async function start5() {
+ export async function start5() {
   try {
     const savedChannels = await loadSavedChannels(); // ← await added
     const channelResults = savedChannels.filter((channel) => channel.subscribed === true);

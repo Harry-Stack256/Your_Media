@@ -39,7 +39,7 @@
         "thumbnail": "https://i.ytimg.com/vi/KdSJ-js1l_4/default.jpg"
       }
     ],
-    "videosFetchedAt": "2026-09-01T18:34:07.399Z"
+    "videosFetchedAt": "2026-09-04T20:22:48.628Z"
   },
   {
     "channelId": "UC4G10tk3AHFuyMIuD3rHOBA",
@@ -50,6 +50,18 @@
     "viewCount": "1945660553",
     "subscribed": true,
     "recentVideos": [
+      {
+        "videoId": "ijUSAdasaOM",
+        "title": "The Switch 2 was running it tf up 🤣 #shorts #nintendo #playstation #xbox #gaming #rdcworld1 #funny",
+        "publishedAt": "2026-09-03T22:10:54Z",
+        "thumbnail": "https://i.ytimg.com/vi/ijUSAdasaOM/default.jpg"
+      },
+      {
+        "videoId": "7ASWMX3TGbY",
+        "title": "THE AVENGERS WOULD BE ASHAMED | GATEKEEP: SUPERHEROES",
+        "publishedAt": "2026-09-01T22:30:09Z",
+        "thumbnail": "https://i.ytimg.com/vi/7ASWMX3TGbY/default.jpg"
+      },
       {
         "videoId": "vuyfs_AF_vU",
         "title": "When It's Your First Day In JOJO'S BIZARRE ADVENTURE",
@@ -67,21 +79,9 @@
         "title": "THE LEAGUE OF EXTRA ORDINARY HEROES",
         "publishedAt": "2026-07-02T22:51:29Z",
         "thumbnail": "https://i.ytimg.com/vi/LB3n9yrew2M/default.jpg"
-      },
-      {
-        "videoId": "crnwpXw-VKw",
-        "title": "Anime will always over exaggerate tf outta sports 🤣 #rdcworld1 #funny #worldcup #fifa",
-        "publishedAt": "2026-06-26T19:25:44Z",
-        "thumbnail": "https://i.ytimg.com/vi/crnwpXw-VKw/default.jpg"
-      },
-      {
-        "videoId": "dm4q12ExLlw",
-        "title": "Why can’t you just admit that you sold? 😂 #funny #rdcworld1 #shorts",
-        "publishedAt": "2026-06-23T21:35:51Z",
-        "thumbnail": "https://i.ytimg.com/vi/dm4q12ExLlw/default.jpg"
       }
     ],
-    "videosFetchedAt": "2026-09-01T18:34:07.717Z"
+    "videosFetchedAt": "2026-09-04T20:22:48.713Z"
   },
   {
     "channelId": "UCiYcA0gJzg855iSKMrX3oHg",
@@ -123,7 +123,7 @@
         "thumbnail": "https://i.ytimg.com/vi/1U1Fpnec-kE/default.jpg"
       }
     ],
-    "videosFetchedAt": "2026-09-01T18:34:07.813Z"
+    "videosFetchedAt": "2026-09-04T20:22:48.818Z"
   },
   {
     "channelId": "UCKjrT7t9h6GsSkzhFe0ccDA",
@@ -165,6 +165,48 @@
         "thumbnail": "https://i.ytimg.com/vi/_Ta7m4SHQmY/default.jpg"
       }
     ],
-    "videosFetchedAt": "2026-09-01T18:34:07.921Z"
+    "videosFetchedAt": "2026-09-04T20:22:48.950Z"
+  },
+  {
+    "channelId": "UCX6OQ3DkcsbYNE6H8uQQuVA",
+    "title": "MrBeast",
+    "thumbnail": "https://yt3.ggpht.com/nxYrc_1_2f77DoBadyxMTmv7ZpRZapHR5jbuYe7PlPd5cIRJxtNNEYyOC0ZsxaDyJJzXrnJiuDE=s88-c-k-c0x00ffffff-no-rj",
+    "subscriberCount": "515000000",
+    "videoCount": "999",
+    "viewCount": "138960633632",
+    "subscribed": true,
+    "recentVideos": [
+      {
+        "videoId": "5mU6SRS2Bxo",
+        "title": "World’s Largest Tennis Match",
+        "publishedAt": "2026-08-23T16:00:04Z",
+        "thumbnail": "https://i.ytimg.com/vi/5mU6SRS2Bxo/default.jpg"
+      },
+      {
+        "videoId": "Qtl8lJwbd4g",
+        "title": "Escape 100 Cops, Win $500,000",
+        "publishedAt": "2026-08-22T16:00:05Z",
+        "thumbnail": "https://i.ytimg.com/vi/Qtl8lJwbd4g/default.jpg"
+      },
+      {
+        "videoId": "LiH-P4rSkLI",
+        "title": "Can You Pass This Classroom Quiz?",
+        "publishedAt": "2026-08-11T16:00:06Z",
+        "thumbnail": "https://i.ytimg.com/vi/LiH-P4rSkLI/default.jpg"
+      },
+      {
+        "videoId": "Af6i6ChAVTw",
+        "title": "Last To Leave Mansion, Keeps It",
+        "publishedAt": "2026-08-08T16:00:01Z",
+        "thumbnail": "https://i.ytimg.com/vi/Af6i6ChAVTw/default.jpg"
+      },
+      {
+        "videoId": "f7y2XikE7sY",
+        "title": "Paying For Food With My Car",
+        "publishedAt": "2026-07-31T16:00:11Z",
+        "thumbnail": "https://i.ytimg.com/vi/f7y2XikE7sY/default.jpg"
+      }
+    ],
+    "videosFetchedAt": "2026-09-04T20:22:49.071Z"
   }
 ]
