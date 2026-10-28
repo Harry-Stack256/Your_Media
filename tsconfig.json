@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    /* Base Options */
+    "target": "ES2022",                        // Target modern JavaScript
+    "module": "NodeNext",                      // Specify module code generation
+    "moduleResolution": "NodeNext",            // How modules get resolved
+    "esModuleInterop": true,                  // Fixes compatibility between CommonJS and ES Modules
+    "skipLibCheck": true,                     // Skips type checking of declaration (.d.ts) files
+    "forceConsistentCasingInFileNames": true, // Ensures file case sensitivity matches the OS
+
+    /* Strictness */
+    "strict": true,                           // Enable all strict type-checking options
+    "noUncheckedIndexedAccess": true,         // Adds 'undefined' to array/object lookups
+
+    /* Output */
+    "outDir": "./dist", 
+    "rootDir": "./src",                   // Redirect output structure to the directory
+    "sourceMap": true 
+                            // Create source map files for debugging
+  },
+  "include": ["./src"],                    // Source files to compile
+  "exclude": ["node_modules", "dist"]         // Folders to completely ignore
+}

@@ -6,7 +6,7 @@
   "scripts": {
     "server": "node ./Server/server.js",
     "start": "node ./Server/server.js",
-    "pipeLine": "node ./Server/practice.js"
+    "pipeLine": "node ./Script/practice.js"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +15,14 @@
   "dependencies": {
     "axios": "^1.19.0",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1",
+    "express": "^5.3.0",
     "fuse.js": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }
